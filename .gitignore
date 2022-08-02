@@ -1,1 +1,9 @@
 .DS_Store
+
+# Latex
+ddg-exercises-written/*/*.aux
+ddg-exercises-written/*/*.fdb_latexmk
+ddg-exercises-written/*/*.fls
+ddg-exercises-written/*/*.log
+ddg-exercises-written/*/*.out
+ddg-exercises-written/*/*.synctex.gz
