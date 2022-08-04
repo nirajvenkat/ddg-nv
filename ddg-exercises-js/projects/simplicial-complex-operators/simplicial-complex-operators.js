@@ -232,12 +232,12 @@ class SimplicialComplexOperators {
                         for (let row = 0; row < subsetVertices.nRows(); row++) {  
                                 let sv = subsetVertices.get(row, 0);
                                 let ev = edgeVertexVector.get(row, 0);
-                                if ((sv != ev) && (sv || ev)) return -1;
+                                if (((sv != 0) != (ev != 0))) return -1;
                         }
                         if (degree != 2) degree = 1;
                 }
 
-                return degree;        
+                return degree;
         }
 
         /** Returns the boundary of a subset.
