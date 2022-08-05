@@ -257,7 +257,7 @@ Mean valence for a quad mesh of large V:\\
 \boxed{\text{Exercise} \quad 2.7}\\\\
 
 \underline{Tet mesh:}\\
-TODO: find the right answer
+TODO: find a proper explanation:\\
 I found an explanation from \href{https://math.stackexchange.com/q/1879347}{Stack Exchange} which gives us the following result:\\
 $$V:E:F:T = 1:4:6:3$$ \\
 whereas the data included in the problem gives us something like:\\
@@ -416,7 +416,8 @@ Each connected set of vertices with a boundary will generate a closed loop for i
 \boxed{\text{Exercise} \quad 2.15}\\\\
 
 Taking the boundary bd($\mathcal{K}$) means removing the interior: bd($\mathcal{K}$) = Cl($\mathcal{K}$) $\setminus$ int($\mathcal{K}$)\\
-The boundary is defined to be the closure of the set of all simplices $\sigma$ that are proper faces of exactly one simplex of $\mathcal{K}$. 
+We could say that int(bd($\mathcal{K}$)) = Cl(bd($\mathcal{K}$)) which gives us our result.\\
+Alternatively, in DDG the boundary is defined as the closure of the set of all simplices $\sigma$ that are proper faces of exactly one simplex of $\mathcal{K}$. 
 The result of taking the boundary is a $(k-1)-$submanifold without any proper faces of exactly one simplex.
 This means $\sigma$ for bd($\mathcal{K}$) becomes $\emptyset$.\\
 \begin{center}
