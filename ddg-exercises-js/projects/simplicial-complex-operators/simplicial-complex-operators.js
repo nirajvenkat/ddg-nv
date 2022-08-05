@@ -220,7 +220,7 @@ class SimplicialComplexOperators {
                         for (let row = 0; row < subsetEdges.nRows(); row++) {
                                 let se = subsetEdges.get(row, 0);
                                 let fe = faceEdgeVector.get(row, 0);
-                                if ((se != fe) && (se || fe)) return -1;
+                                if (((se != 0) != (fe != 0))) return -1;
                         }
                         degree = 2;
                 }
