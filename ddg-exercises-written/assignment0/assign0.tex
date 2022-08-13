@@ -412,17 +412,28 @@ The boundary of a simplicial surface will have zero or more closed loops.\\
 Each connected set of vertices with a boundary will generate a closed loop for its boundary.
 
 
-\vspace{1.8cm}
+\pagebreak
 \boxed{\text{Exercise} \quad 2.15}\\\\
 
-Taking the boundary bd($\mathcal{K}$) means removing the interior: bd($\mathcal{K}$) = Cl($\mathcal{K}$) $\setminus$ int($\mathcal{K}$)\\
-We could say that int(bd($\mathcal{K}$)) = Cl(bd($\mathcal{K}$)) which gives us our result.\\
-Alternatively, in DDG the boundary is defined as the closure of the set of all simplices $\sigma$ that are proper faces of exactly one simplex of $\mathcal{K}$. 
-The result of taking the boundary is a $(k-1)-$submanifold without any proper faces of exactly one simplex.
-This means $\sigma$ for bd($\mathcal{K}$) becomes $\emptyset$.\\
-\begin{center}
-    bd(bd($\mathcal{K}$)) = Cl($\sigma$) = Cl($\emptyset$) = $\emptyset$.
-\end{center}
+Here are a few ways to show that bd(bd($\mathcal{K}$)) = $\emptyset$:
+
+\begin{itemize}
+    \item
+    Taking the boundary bd($\mathcal{K}$) means removing the interior: bd($\mathcal{K}$) = Cl($\mathcal{K}$) $\setminus$ int($\mathcal{K}$).
+    We could say that int(bd($\mathcal{K}$)) = Cl(bd($\mathcal{K}$)) which gives us our result.
+    
+    \item
+    Given a $k$-dimensional point set $\mathcal{K}$, for all points $p$ in the boundary of $\mathcal{K}$, the intersection of some
+    open ball around $p$ is homeomorphic to an open $(k-1)$-ball.
+    
+    \item
+    In DDG the boundary is defined as the closure of the set of all simplices $\sigma$ that are proper faces of exactly one simplex of $\mathcal{K}$. 
+    The result of taking the boundary is a $(k-1)-$submanifold without any proper faces of exactly one simplex.
+    This means $\sigma$ for bd($\mathcal{K}$) becomes $\emptyset$.
+    \begin{center}
+        bd(bd($\mathcal{K}$)) = Cl($\sigma$) = Cl($\emptyset$) = $\emptyset$.
+    \end{center}
+\end{itemize}
 
 
 
