@@ -199,7 +199,7 @@ class Geometry {
 	 * @returns {number}
 	 */
 	cotan(h) {
-		if (h.onBoundary) h = h.twin();
+		if (h.onBoundary) h = h.twin;
 		let u = this.vector(h.prev);
 		let v = this.vector(h.next).negated();
 

@@ -15,7 +15,8 @@ class DEC {
 	 */
 	static buildHodgeStar0Form(geometry, vertexIndex) {
 		let mesh = geometry.mesh;
-		let T = new Triplet(mesh.vertices.length, mesh.vertices.length);
+		let V = mesh.vertices.length;
+		let T = new Triplet(V, V);
 
 		mesh.vertices.forEach((vertex, vIdx) => {
 			// We treat volume of a vertex as 1
@@ -35,7 +36,8 @@ class DEC {
 	 */
 	static buildHodgeStar1Form(geometry, edgeIndex) {
 		let mesh = geometry.mesh;
-		let T = new Triplet(mesh.edges.length, mesh.edges.length);
+		let E = mesh.edges.length;
+		let T = new Triplet(E, E);
 
 		mesh.edges.forEach((edge, eIdx) => {
 			let h1 = edge.halfedge;
@@ -58,7 +60,8 @@ class DEC {
 	 */
 	static buildHodgeStar2Form(geometry, faceIndex) {
 		let mesh = geometry.mesh;
-		let T = new Triplet(mesh.faces.length, mesh.faces.length);
+		let F = mesh.faces.length;
+		let T = new Triplet(F, F);
 
 		mesh.faces.forEach((face, fIdx) => {
 			// We treat volume of a vertex as 1
