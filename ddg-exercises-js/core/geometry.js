@@ -199,9 +199,14 @@ class Geometry {
 	 * @returns {number}
 	 */
 	cotan(h) {
-		// TODO
+		if (h.onBoundary()) h = h.twin();
+		let a = this.positions[h.vertex];
+		let b = this.positions[h.next.vertex];
+		let c = this.positions[h.prev.vertex];
+		let u = b.minus(c);
+		let v = a.minus(c);
 
-		return 0.0; // placeholder
+		return u.dot(v) / u.cross(v).norm2();
 	}
 
 	/**
@@ -224,9 +229,12 @@ class Geometry {
 	 * @returns {number}
 	 */
 	barycentricDualArea(v) {
-		// TODO
+		let sum = 0.0;
+		for (let f of v.adjacentFaces()) {
+			sum += area(f);
+		}
 
-		return 0.0; // placeholder
+		return sum / 3.0;
 	}
 
 	/**
