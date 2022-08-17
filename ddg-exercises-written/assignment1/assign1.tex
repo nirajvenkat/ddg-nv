@@ -53,6 +53,8 @@
 
 \begin{document}
 
+
+
 \title{Written Assignment 1}
 
 \author{Niraj Venkat}
@@ -738,7 +740,12 @@ So the edges fanning out of a vertex (sorted in say CCW order) will alternate in
     Using the diagonal Hodge star from the lectures.
     For each edge $ij$:
     $$
-        \star_1 = \text{diag}\Bigl\{\hal (\cot\alpha_{ij} + \cot\beta_{ij})\Bigr\}
+        \star_1 = \text{diag}\Bigl\{
+            \begin{cases}
+                \hal (\cot\alpha_{ij} + \cot\beta_{ij}), \quad \text{if $ij \notin$ boundary} \\
+                0, \quad \text{if $ij \in$ boundary}
+            \end{cases}
+        \Bigr\}
     $$
 
     \item
@@ -747,83 +754,6 @@ So the edges fanning out of a vertex (sorted in say CCW order) will alternate in
         \star_2 = \text{diag}\Bigl\{\frac{1}{A_{ijk}}\Bigr\}
     $$
 \end{enumerate}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
