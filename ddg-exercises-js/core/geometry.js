@@ -437,12 +437,15 @@ class Geometry {
 	 * @returns {number[]} An array containing the minimum and maximum principal curvature values at a vertex.
 	 */
 	principalCurvatures(v) {
-		let K = scalarGaussCurvature(v);
-		let H = scalarMeanCurvature(v);
-		let kappa1 = H + Math.sqrt(H * H - K);
-		let kappa2 = H - Math.sqrt(H * H - K);
+		let area = circumcentricDualArea(v);
+		let K = scalarGaussCurvature(v) / area;
+		let H = scalarMeanCurvature(v) / area;
 		
-		return [min(kappa1, kappa2), max(kappa1, kappa2)];
+		let sqrt = Math.sqrt(H * H - K);
+		let kappa1 = H - sqrt;
+		let kappa2 = H + sqrt;
+		
+		return [kappa1, kappa2];
 	}
 
 	/**
