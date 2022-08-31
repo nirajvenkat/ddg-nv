@@ -437,6 +437,8 @@ class Geometry {
 	 * @returns {number[]} An array containing the minimum and maximum principal curvature values at a vertex.
 	 */
 	principalCurvatures(v) {
+		// K and H actually give us total curvature over the area of the dual cell
+		// So we need to normalize by this area, effectively converting a 2-form into a 0-form
 		let area = circumcentricDualArea(v);
 		let K = scalarGaussCurvature(v) / area;
 		let H = scalarMeanCurvature(v) / area;
