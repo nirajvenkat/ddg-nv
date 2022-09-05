@@ -46,6 +46,7 @@
 \def\hal{\frac{1}{2}}
 \def\ep{\varepsilon}
 \def\cK{\mathcal{K}}
+\def\cM{\mathcal{M}}
 \def\cA{\mathcal{A}}
 \def\cS{\mathcal{S}}
 \def\Q{\mathbb{Q}}
@@ -213,23 +214,46 @@ $$u \times v = 2e_1 -2e_3$$ which is a 1-vector in $\mathbb{R}^3$.
     \end{align}
 
     \item
-    Let $w=e_1 \wedge e_2 \wedge \dots \wedge e_k$ be a $k-$vector in $\mathbb{R}^n$,\\
-    where $\{e_1, e_2, \dots, e_n\}$ forms an orthonormal basis like before. We use the rule $\det(w \wedge \star w) = 1$:
-    \begin{align}
-        \star w &= \star(e_1 \wedge e_2 \wedge \dots \wedge e_k) \notag\\
-                &= e_{k+1} \wedge e_{k+2} \wedge \dots \wedge e_n \notag
-    \end{align}
-    Applying Hodge star twice:\\
-    \begin{align}
-        \star \star w &= (-1)^{k(n-k)} e_1 \wedge e_2 \wedge \dots \wedge e_k \notag\\
-                    &= (-1)^{k(n-k)} w \notag
-    \end{align}
-    where we pick up a factor of $-1$ each time we pull one of the last $k$ 1-vectors leftwards past the first $n-k$.
+    % Let $w=e_1 \wedge e_2 \wedge \dots \wedge e_k$ be a $k-$vector in $\mathbb{R}^n$,\\
+    % where $\{e_1, e_2, \dots, e_n\}$ forms an orthonormal basis like before. We use the rule $\det(w \wedge \star w) = 1$:
+    % \begin{align}
+    %     \star w &= \star(e_1 \wedge e_2 \wedge \dots \wedge e_k) \notag\\
+    %             &= e_{k+1} \wedge e_{k+2} \wedge \dots \wedge e_n \notag
+    % \end{align}
+    % Applying Hodge star twice:\\
+    % \begin{align}
+    %     \star \star w &= (-1)^{k(n-k)} e_1 \wedge e_2 \wedge \dots \wedge e_k \notag\\
+    %                 &= (-1)^{k(n-k)} w \notag
+    % \end{align}
+    % where we pick up a factor of $-1$ each time we pull one of the last $k$ 1-vectors leftwards past the first $n-k$.
+    Piggybacking on a proof found \href{http://staff.ustc.edu.cn/~wangzuoq/Courses/16S-RiemGeom/Notes/Lec25.pdf}{here}.\\
+    Let $w=e_1 \wedge e_2 \wedge \dots \wedge e_k$ be a $k-$vector in $\mathbb{R}^n$,
+    where $\{e_1, e_2, \dots, e_n\}$ forms an orthonormal basis like before.\\
+    Using the notes, we can prove that the wedge product of an 
+    arbitrary $k$-form with an arbitrary $(n-k)$-form should look like:
+    $$
+        w^{i_1} \wedge \dots \wedge w^{i_k} \wedge w^{j_1} \wedge \dots \wedge w^{j_{n-k}} = 
+        (-1)^{i_1 + \dots + i_k + 1 + \dots + k} w^{1} \wedge \dots \wedge w^{n}
+    $$
+    We still get an $n$-form, but a sign that is due to the anti-symmetry properties of the wedge product.
+    The above is proved using the rule $\det(w \wedge \star w) = 1$
+    along with a subtle rule that depends on the dual inner product induced
+    by the Reimannan metric $g$ on the dual space of the tangent space $T_p^\star \cM$.\\\\
+    So we apply Hodge star twice:
+    \begin{align*}
+        w &= w^{i_1} \wedge \dots \wedge w^{i_k} \\
+        \star w &= (-1)^{i_1 + \dots + i_k + 1 + \dots + k} w^{j_1} \wedge \dots \wedge w^{j_{n-k}}\\
+        \star \star w &= (-1)^{i_1 + \dots + i_k + 1 + \dots + k} (-1)^{j_1 + \dots + j_{n-k} + 1 + \dots + n-k} w\\
+            &= (-1)^{k(n-k)} w
+    \end{align*}
+    
+    
+
 \end{enumerate}
 
 
 
-\vspace{1.8cm}
+\pagebreak
 \boxed{\text{Exercise} \quad 8}\\\\
 
 
@@ -415,7 +439,7 @@ $$d(\alpha \wedge \beta) = d\alpha \wedge \beta + (-1)^k\alpha \wedge d\beta$$
 \end{enumerate}
 
 
-\vspace{1.8cm}
+\pagebreak
 \boxed{\text{Exercise} \quad 14}\\\\
 
 \begin{itemize}
@@ -450,7 +474,7 @@ $$d(\alpha \wedge \beta) = d\alpha \wedge \beta + (-1)^k\alpha \wedge d\beta$$
 \end{itemize}
 
 
-\pagebreak
+\vspace{1.8cm}
 \boxed{\text{Exercise} \quad 15}\\\\
 
 \begin{enumerate}[label=(\alph*)]
@@ -507,7 +531,7 @@ $$d(\alpha \wedge \beta) = d\alpha \wedge \beta + (-1)^k\alpha \wedge d\beta$$
 \end{enumerate}
 
 
-\pagebreak
+\vspace{1.8cm}
 \boxed{\text{Exercise} \quad 16}\\\\
 
 We can prove that the entries of the operator $d_1 \circ d_0 \in \mathbb{R}^{|F| \times |V|}$ are all zero. This
@@ -520,7 +544,7 @@ so it must have exactly 2 faces for each edge. These 2 neighboring faces sharing
 So the edges fanning out of a vertex (sorted in say CCW order) will alternate in sign and this causes the cancellation.
 
 
-\vspace{1.8cm}
+\pagebreak
 \boxed{\text{Exercise} \quad 17}\\\\
 
 \begin{enumerate}[label=(\alph*)]
