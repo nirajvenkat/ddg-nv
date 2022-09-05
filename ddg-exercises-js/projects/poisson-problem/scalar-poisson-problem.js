@@ -17,10 +17,13 @@ class ScalarPoissonProblem {
 		// index vertices
 		this.vertexIndex = indexElements(geometry.mesh.vertices);
 
-		// TODO: build the laplace and mass matrices, and compute total area
-		this.A = SparseMatrix.identity(1, 1); // placeholder
-		this.M = SparseMatrix.identity(1, 1); // placeholder
-		this.totalArea = 0.0; // placeholder
+		// Build the laplace and mass matrices, and compute total area
+		this.A = geometry.laplaceMatrix(this.vertexIndex);
+		this.M = geometry.massMatrix(this.vertexIndex);
+		this.totalArea = geometry.totalArea();
+
+		// Cholesky factorization linear solver that can be reused
+		this.llt = this.A.chol();
 	}
 
 	/**
@@ -31,8 +34,15 @@ class ScalarPoissonProblem {
 	 * @returns {module:LinearAlgebra.DenseMatrix}
 	 */
 	solve(rho) {
-		// TODO
+		// Solve the linear system Ax = b, 
+		// where A is a square positive definite sparse matrix
+		// and b = -M(rho - rhoBar)
+		const V = this.M.nRows();
+		let rhoBar = this.M.timesDense(rho).sum() / this.totalArea;
+		rhoBar = DenseMatrix.ones(V, 1).timesReal(rhoBar);
+		let b = rhoBar.minus(rho);
+		b = this.M.timesDense(b);
 
-		return DenseMatrix.zeros(rho.nRows(), 1); // placeholder
+		return this.llt.solvePositiveDefinite(b);
 	}
 }

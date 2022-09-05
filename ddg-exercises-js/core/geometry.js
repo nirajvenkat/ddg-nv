@@ -388,7 +388,7 @@ class Geometry {
 	angleDefect(v) {
 		let sum = 0.0;
 		for (let c of v.adjacentCorners()) {
-			sum += angle(c);
+			sum += this.angle(c);
 		}
 
 		let angle = v.onBoundary() ? Math.PI : 2.0 * Math.PI;
@@ -459,9 +459,26 @@ class Geometry {
 	 * @returns {module:LinearAlgebra.SparseMatrix}
 	 */
 	laplaceMatrix(vertexIndex) {
-		// TODO
+		const V = this.mesh.vertices.length;
+		let T = new Triplet(V, V);
 
-		return SparseMatrix.identity(1, 1); // placeholder
+		for (let v of this.mesh.vertices) {
+			let i = vertexIndex[v];
+			// To make this matrix strictly positive definite (rather than semidefinite)
+			// we add a small offset. This technique is known as Tikhonov regularization.
+			let sum = 1e-8;
+			
+			for (let h of v.adjacentHalfedges()) {
+				let j = vertexIndex[h.twin.vertex];
+				const cotanSum = 0.5 * (this.cotan(h) + this.cotan(h.twin));
+				sum += cotanSum;
+
+				T.addEntry(-cotanSum, i, j)
+			}
+			T.addEntry(sum, i, i);
+		}
+
+		return SparseMatrix.fromTriplet(T);
 	}
 
 	/**
@@ -472,9 +489,16 @@ class Geometry {
 	 * @returns {module:LinearAlgebra.SparseMatrix}
 	 */
 	massMatrix(vertexIndex) {
-		// TODO
+		const V = this.mesh.vertices.length;
+		let T = new Triplet(V, V);
 
-		return SparseMatrix.identity(1, 1); // placeholder
+		for (let v of this.mesh.vertices) {
+			let i = vertexIndex[v];
+			const area = this.barycentricDualArea(v);
+			T.addEntry(area, i, i);
+		}
+
+		return SparseMatrix.fromTriplet(T);
 	}
 
 	/**
