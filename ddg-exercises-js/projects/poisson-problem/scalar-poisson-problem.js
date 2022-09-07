@@ -17,7 +17,7 @@ class ScalarPoissonProblem {
 		// index vertices
 		this.vertexIndex = indexElements(geometry.mesh.vertices);
 
-		// Build the laplace and mass matrices, and compute total area
+		// Build the Laplace and mass matrices, and compute total area
 		this.A = geometry.laplaceMatrix(this.vertexIndex);
 		this.M = geometry.massMatrix(this.vertexIndex);
 		this.totalArea = geometry.totalArea();

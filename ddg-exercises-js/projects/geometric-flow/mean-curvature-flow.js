@@ -22,9 +22,10 @@ class MeanCurvatureFlow {
 	 * @returns {module:LinearAlgebra.SparseMatrix}
 	 */
 	buildFlowOperator(M, h) {
-		// TODO
+		let A = this.geometry.laplaceMatrix(this.vertexIndex);
 
-		return SparseMatrix.identity(1, 1); // placeholder
+		// Flow operator computed using Forward Euler update: F = M + hA
+		return M.plus(A.timesReal(h));
 	}
 
 	/**
@@ -33,10 +34,38 @@ class MeanCurvatureFlow {
 	 * @param {number} h The timestep.
 	 */
 	integrate(h) {
-		// TODO
 		let vertices = this.geometry.mesh.vertices;
+		let V = vertices.length;
+		let M = this.geometry.massMatrix(this.vertexIndex);
+		let F = this.buildFlowOperator(M, h);
 
-		// center mesh positions around origin
+		// Encode the surface as a single matrix of size |V| * 3
+		let b = DenseMatrix.zeros(V, 3);
+		for (let v of vertices) {
+			let i = this.vertexIndex[v];
+			let p = this.geometry.positions[v];
+
+			b.set(p.x, i, 0);
+			b.set(p.y, i, 1);
+			b.set(p.z, i, 2);
+		}
+		b = M.timesDense(b);
+
+		// Solve Fx = b using Cholesky solver
+		let llt = F.chol();
+		let x = llt.solvePositiveDefinite(b);
+
+		// Update vertices using the solution x
+		for (let v of vertices) {
+			let i = this.vertexIndex[v];
+			let p = this.geometry.positions[v];
+
+			p.x = x.get(i, 0);
+			p.y = x.get(i, 1);
+			p.z = x.get(i, 2);
+		}
+
+		// Center mesh positions around origin
 		normalize(this.geometry.positions, vertices, false);
 	}
 }
