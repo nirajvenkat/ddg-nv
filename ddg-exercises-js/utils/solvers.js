@@ -19,7 +19,7 @@ class Solvers {
 
 		let r1 = A.timesDense(y);
 		let lambda = y.transpose().conjugate().timesDense(r1);
-		let r2 = y.timesDense(lambda);
+		let r2 = y.timesDense(lambda); // Reverse the order of matmul as given 
 
 		let r = r1.minus(r2);
 

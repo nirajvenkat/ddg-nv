@@ -2,7 +2,7 @@
 
 class SpectralConformalParameterization {
 	/**
-	 * This class implements the {@link https://cs.cmu.edu/~kmcrane/Projects/DDG/paper.pdf spectral conformal parameterization} algorithm to flatten
+	 * This class implements the {@link http://www.geometry.caltech.edu/pubs/MTAD08.pdf spectral conformal parameterization} algorithm to flatten
 	 * surface meshes with boundaries conformally.
 	 * @constructor module:Projects.SpectralConformalParameterization
 	 * @param {module:Core.Geometry} geometry The input geometry of the mesh this class acts on.
@@ -21,9 +21,26 @@ class SpectralConformalParameterization {
 	 * @returns {module:LinearAlgebra.ComplexSparseMatrix}
 	 */
 	buildConformalEnergy() {
-		// TODO
+		// Build the dirichlet energy matrix
+		let ED = this.geometry.complexLaplaceMatrix(this.vertexIndex);
+		ED.scaleBy(new Complex(0.5));
 
-		return ComplexSparseMatrix.identity(1, 1); // placeholder
+		// Build the area term
+		let ii = new Complex(0, 1);
+		let T = new ComplexTriplet(ED.nRows(), ED.nCols());
+		for (let b of this.geometry.mesh.boundaries) {
+			for (let h of b.adjacentHalfedges()) {
+				let i = this.vertexIndex[h.vertex];
+				let j = this.vertexIndex[h.twin.vertex];
+
+				T.addEntry(ii.timesReal(0.25), i, j);
+				T.addEntry(ii.timesReal(-0.25), j, i);
+			}
+		}
+
+		let A = ComplexSparseMatrix.fromTriplet(T);
+
+		return ED.minus(A);
 	}
 
 	/**
@@ -32,11 +49,24 @@ class SpectralConformalParameterization {
 	 * @returns {Object} A dictionary mapping each vertex to a vector of planar coordinates.
 	 */
 	flatten() {
-		// TODO
 		let vertices = this.geometry.mesh.vertices;
-		let flattening = this.geometry.positions; // placeholder
+		let flattening = {};
 
-		// normalize flattening
+		// Build the conformal energy matrix
+		let EC = this.buildConformalEnergy();
+
+		// Find the eigenvector corresponding to the smallest eigenvalue of EC
+		let z = Solvers.solveInversePowerMethod(EC);
+
+		// Assign flattening
+		for (let v of vertices) {
+			let i = this.vertexIndex[v];
+			let zi = z.get(i, 0);
+
+			flattening[v] = new Vector(zi.re, zi.im);
+		}
+
+		// Normalize flattening
 		normalize(flattening, vertices);
 
 		return flattening;

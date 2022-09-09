@@ -519,7 +519,7 @@ class Geometry {
 	 */
 	complexLaplaceMatrix(vertexIndex) {
 		const V = this.mesh.vertices.length;
-		let T = new Triplet(V, V);
+		let T = new ComplexTriplet(V, V);
 
 		for (let v of this.mesh.vertices) {
 			let i = vertexIndex[v];
