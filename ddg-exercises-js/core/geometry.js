@@ -203,7 +203,7 @@ class Geometry {
 	 */
 	cotan(h) {
 		// Workaround for if we are on a boundary, angle is undefined
-		if (h.onBoundary) h = h.twin;
+		if (h.onBoundary) return 0.0;
 
 		let u = this.vector(h.prev);
 		let v = this.vector(h.next).negated();
@@ -220,11 +220,11 @@ class Geometry {
 	 */
 	dihedralAngle(h) {
 		// First get normals N_{ijk} and N_{jil} of the adjacent faces
-		let n1 = faceNormal(h.face);
-		let n2 = faceNormal(h.twin.face);
+		let n1 = this.faceNormal(h.face);
+		let n2 = this.faceNormal(h.twin.face);
 
 		// Compute the (y = opposite, x = adjacent) side lengths for arctan
-		let y = this.vector(h).normalize().dot(n1.cross(n2));
+		let y = this.vector(h).unit().dot(n1.cross(n2));
 		let x = n1.dot(n2);
 
 		return Math.atan2(y, x);
@@ -280,7 +280,6 @@ class Geometry {
 
 			n.incrementBy(normal);
 		}
-
 		n.normalize();
 
 		return n;
@@ -299,8 +298,9 @@ class Geometry {
 			let n_f = this.faceNormal(f);
 			n.incrementBy(n_f.times(area));
 		}
+		n.normalize();
 
-		return n.normalize();
+		return n;
 	}
 
 	/**
@@ -312,12 +312,14 @@ class Geometry {
 	vertexNormalAngleWeighted(v) {
 		let n = new Vector();
 		for (let c of v.adjacentCorners()) {
-			let phi = angle(c);
+			let phi = this.angle(c);
 			let n_f = this.faceNormal(c.halfedge.face);
 			n.incrementBy(n_f.times(phi));
 		}
 		
-		return n.normalize();
+		n.normalize();
+		
+		return n;
 	}
 
 	/**
@@ -329,13 +331,14 @@ class Geometry {
 	vertexNormalGaussCurvature(v) {
 		let n = new Vector();
 		for (let h of v.adjacentHalfedges()) {
-			let e_ij = this.vector(h).normalize();
-			let theta = this.dihedralAngle(h);
-			n.incrementBy(e_ij.times(theta));
-		}
-		n.divideBy(2);
+			let weight = 0.5 * this.dihedralAngle(h) / this.length(h.edge);
 
-		return n.normalize();
+			n.decrementBy(this.vector(h).times(weight));
+		}
+
+		n.normalize();
+
+		return n;
 	}
 
 	/**
@@ -352,8 +355,9 @@ class Geometry {
 			n.incrementBy(e_ij.times(cotanSum));
 		}
 		n.divideBy(2);
+		n.normalize();
 
-		return n.normalize();
+		return n;
 	}
 
 	/**
@@ -374,8 +378,9 @@ class Geometry {
 
 			n.incrementBy(cross);
 		}
+		n.normalize();
 
-		return n.normalize();
+		return n;
 	}
 
 	/**
@@ -439,13 +444,16 @@ class Geometry {
 	principalCurvatures(v) {
 		// K and H actually give us total curvature over the area of the dual cell
 		// So we need to normalize by this area, effectively converting a 2-form into a 0-form
-		let area = circumcentricDualArea(v);
-		let K = scalarGaussCurvature(v) / area;
-		let H = scalarMeanCurvature(v) / area;
+		let area = this.circumcentricDualArea(v);
+		let K = this.scalarGaussCurvature(v) / area;
+		let H = this.scalarMeanCurvature(v) / area;
 		
-		let sqrt = Math.sqrt(H * H - K);
-		let kappa1 = H - sqrt;
-		let kappa2 = H + sqrt;
+		let discriminant = H * H - K;
+		if (discriminant > 0) discriminant = Math.sqrt(discriminant);
+		else discriminant = 0;
+
+		let kappa1 = H - discriminant;
+		let kappa2 = H + discriminant;
 		
 		return [kappa1, kappa2];
 	}
@@ -510,9 +518,26 @@ class Geometry {
 	 * @returns {module:LinearAlgebra.ComplexSparseMatrix}
 	 */
 	complexLaplaceMatrix(vertexIndex) {
-		// TODO
+		const V = this.mesh.vertices.length;
+		let T = new Triplet(V, V);
 
-		return ComplexSparseMatrix.identity(1, 1); // placeholder
+		for (let v of this.mesh.vertices) {
+			let i = vertexIndex[v];
+			// The only difference now is that the cotan values of the complex cotan-Laplace
+			// matrix will be complex numbers with a zero imaginary component.
+			let sum = 1e-8;
+			
+			for (let h of v.adjacentHalfedges()) {
+				let j = vertexIndex[h.twin.vertex];
+				const cotanSum = 0.5 * (this.cotan(h) + this.cotan(h.twin));
+				sum += cotanSum;
+
+				T.addEntry(new Complex(-cotanSum), i, j)
+			}
+			T.addEntry(new Complex(sum), i, i);
+		}
+
+		return ComplexSparseMatrix.fromTriplet(T);
 	}
 }
 
