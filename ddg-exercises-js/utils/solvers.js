@@ -14,9 +14,25 @@ class Solvers {
 	 * @returns {number}
 	 */
 	static residual(A, x) {
-		// TODO
+		// let Ax = A.timesDense(x);
+		// let xDag = x.conjugate().transpose();
+		// let xDagAx = xDag.timesDense(Ax).get(0, 0);
+		// let xDagx = xDag.timesDense(x).get(0, 0);
+		// let lambda = xDagAx.overComplex(xDagx);
+		// let lambdax = x.timesComplex(lambda);
 
-		return 0.0; // placeholder
+		// let numer = Ax.minus(lambdax).get(0, 0).norm(2);
+		// let denom = x.norm(2);
+
+		// return numer / denom;
+		let y = x.timesComplex(new Complex(1.0/x.norm(2)));
+
+		let r1 = A.timesDense(y);
+		let r2 = y.timesDense(y.transpose().conjugate().timesDense(r1));
+
+		let r = r1.minus(r2);
+
+		return r.norm(2);
 	}
 
 	/**
@@ -29,9 +45,27 @@ class Solvers {
 	 * smallest eigenvalue λ) of A.
 	 */
 	static solveInversePowerMethod(A) {
-		// TODO
+		const N = A.nRows();
+		// Initial guess is random
+		let x = ComplexDenseMatrix.random(N, 1);
+		// Faster to multiply ones than init a new matrix at every iteration
+		let ones = ComplexDenseMatrix.ones(N, 1);
+		// Compute prefactorization
+		let llt = A.chol();
 
-		return ComplexDenseMatrix.zeros(1, 1); // placeholder
+		const epsilon = 1e-10;
+		while (this.residual(A, x) > epsilon) {
+			x = llt.solvePositiveDefinite(x);
+
+			// Subtract mean
+			let mean = x.sum().overReal(N);
+			x.decrementBy(ones.timesComplex(mean));
+
+			// Normalize
+			x.scaleBy(new Complex(1.0 / x.norm(2)));
+		}
+
+		return x;
 	}
 
 	/**
