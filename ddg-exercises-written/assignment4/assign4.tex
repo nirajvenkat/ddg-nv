@@ -1,0 +1,496 @@
+\documentclass{article}
+
+\usepackage{blindtext}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage[skip=1ex]{caption}
+\usepackage{subcaption}
+\usepackage{mdframed}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{cancel}
+\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage{helvet}
+\usepackage{microtype}
+\usepackage[pdftex]{hyperref}
+\usepackage{float}
+\usepackage{nicematrix}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=1cm,
+    bottom=1cm
+}
+
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+% Macros
+
+% Make inline frac bigger
+\newcommand\ifrac[2]{{\displaystyle\frac{#1}{#2}}}
+
+% Aliases
+\def\wstar{\overset{*}{\rightharpoonup}}
+\def\grad{\nabla}
+\def\lap{\Delta}
+\def\nt{\notag}
+\def\dt{\partial_t}
+\def\hal{\ifrac{1}{2}}
+\def\ep{\varepsilon}
+\def\cK{\mathcal{K}}
+\def\cA{\mathcal{A}}
+\def\cS{\mathcal{S}}
+\def\cV{\mathcal{V}}
+\def\cJ{\mathcal{J}}
+\def\Q{\mathbb{Q}}
+\def\R{\mathbb{R}}
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+\def\la{\langle}
+\def\ra{\rangle}
+\def\ll{\langle\langle}
+\def\rr{\rangle\rangle}
+
+% Custom operators
+\DeclareMathOperator{\Err}{Err}
+\DeclareMathOperator{\re}{Re}
+\DeclareMathOperator{\im}{Im}
+
+
+
+
+
+\begin{document}
+
+
+
+\title{Written Assignment 4}
+
+\author{Niraj Venkat}
+
+\date{}
+
+\maketitle
+
+\vspace{.8cm}
+\boxed{\text{Exercise} \quad 1}\\\\
+
+Important to note that we can only prove this for a 1-form $\alpha$ in $\R^2$. In $\R^n$ the Hodge star of a 
+$k$-form is an $(n-k)$-form. We now need some way of relating the operators Hodge star $\star$ and complex structure $\cJ$.\\
+
+Adopting the convention $\star\alpha(X) = \alpha(\cJ X)$:
+
+\begin{align*}
+    \star\alpha(X) \wedge \alpha(X, \cJ X) &= \star\alpha(X)\alpha(\cJ X) - \star\alpha(\cJ X)\alpha(X) \\
+        &= \alpha(\cJ X)\alpha(\cJ X) - \alpha(\cJ \cJ X)\alpha(X) \tag*{$\cJ^2$ = -id} \\
+        &= \alpha(\cJ X)\alpha(\cJ X) + \alpha(X)\alpha(X) \\
+        &\ge 0
+\end{align*}
+
+$X$ and $\cJ X$ form an orthogonal basis for the tangent space $T_pM$. This means for any two 
+real valued 1-forms $\alpha, \beta \ge 0$ we claim that 
+$\langle \langle \alpha, \beta \rangle \rangle = \int_M \star\alpha \wedge \beta$ is positive definite.\\
+
+With the equal and opposite convention $\star\alpha(X) = - \alpha(\cJ X)$:
+
+\begin{align*}
+    \alpha(X) \wedge \star\alpha(X, \cJ X) &= \alpha(X)\star\alpha(\cJ X) - \alpha(\cJ X)\star\alpha(X) \\
+        &= -\alpha(X)\alpha(\cJ \cJ X) + \alpha(\cJ X)\alpha(\cJ X) \tag*{$\cJ^2$ = -id} \\
+        &= \alpha(X)\alpha(X) + \alpha(\cJ X)\alpha(\cJ X) \\
+        &\ge 0
+\end{align*}
+In this case we claim that 
+$\langle \langle \alpha, \beta \rangle \rangle = \int_M \alpha \wedge \star\beta$ is positive definite.
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 2}\\\\
+
+
+\begin{align*}
+    (\star \star \alpha) \wedge (\star \alpha) (X, \cJ X) &= \star \star \alpha(X) \star \alpha(\cJ X) - \star \star \alpha(\cJ X) \star \alpha(X) \\
+        &= \star \alpha(\cJ X) \star \alpha(\cJ X) + \star \alpha(X) \star \alpha(X) \\
+        &= \alpha(\cJ X) \alpha(\cJ X) + \alpha(X) \alpha(X) \\
+        &= \star \alpha \wedge \alpha (X, \cJ X)
+\end{align*}
+
+Therefore, 
+
+\begin{align*}
+    ||\star \alpha|| &= \sqrt{\langle \langle \star \alpha, \star \alpha \rangle \rangle} \\
+        &= \sqrt{\int_M (\star \star \alpha) \wedge (\star \alpha)} \\
+        &= \sqrt{\int_M \star \alpha \wedge \alpha} \\
+        &= \sqrt{\langle \langle \alpha, \alpha \rangle \rangle} = ||\alpha||
+\end{align*}
+
+The geometric intuition here is that in $\R^2$, the Hodge star of a 1-form is just a $90^\circ$ rotation,
+and rotations preserve length.
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 3}\\\\
+
+
+Let $u = a + i b$ and $v = c + i d$, then
+
+\begin{align*}
+    \bar{u} v &= (a - i b) (c + i d) \\
+        &= ac + i ad - i bc + bd \\
+        &= (ac + bd) + i (ad - bc) \\
+        &= u \cdot v + i (u \times v)
+\end{align*}
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 4}\\\\
+
+
+We show that inner product $\langle. \,, .\rangle$ in $\C$ is Hermitian:
+
+\begin{align*}
+    \langle u, v \rangle &= u \cdot v + i (u \times v) \\
+        &= v \cdot u - i (v \times u) \\
+        &= \overline{v \cdot u - i (v \times u)} \\
+        &= \overline{\langle v, u \rangle}
+\end{align*}
+
+Next we show that inner product is positive definite for $u \ne 0$:
+
+\begin{align*}
+    \langle u, u \rangle &= u \cdot u + i (u \times u) \\
+        &= u \cdot u + 0 \\
+        &> 0
+\end{align*}
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 5}\\\\
+
+
+\begin{align*}
+    \star \bar{\alpha} \wedge \alpha (X, \cJ X) &= \star \bar{\alpha}(X) \alpha(\cJ X) - \star \bar{\alpha}(\cJ X) \alpha(X) \\
+        &= \bar{\alpha}(\cJ X) \alpha(\cJ X) + \bar{\alpha}(X) \alpha(X) \\
+        &= \langle \alpha(\cJ X), \alpha(\cJ X) \rangle + \langle \alpha(X), \alpha(X) \rangle \\
+        &\ge 0
+\end{align*}
+
+\begin{align*}
+    \star \bar{\alpha} \wedge \beta (X, \cJ X) &= \star \bar{\alpha}(X) \beta(\cJ X) - \star \bar{\alpha}(\cJ X) \beta(X) \\
+        &= \bar{\alpha}(\cJ X) \beta(\cJ X) + \bar{\alpha}(X) \beta(X) \\
+        &= \langle \alpha(\cJ X), \beta(\cJ X) \rangle + \langle \alpha(X), \beta(X) \rangle
+\end{align*}
+
+\begin{align*}
+    \star \bar{\beta} \wedge \alpha (X, \cJ X) &= \langle \beta(\cJ X), \alpha(\cJ X) \rangle + \langle \beta(X), \alpha(X) \rangle \\
+        &= \overline{\langle \alpha(\cJ X), \beta(\cJ X) \rangle} + \overline{\langle \alpha(X), \beta(X) \rangle} \\
+        &= \overline{\star \bar{\alpha} \wedge \beta (X, \cJ X)}
+\end{align*}
+
+Using the identity $z + \bar{z} = \re z$, $\langle \langle \alpha, \beta \rangle \rangle = \re \int_M \star \bar{\alpha} \wedge \beta$
+is Hermitian and positive definite.
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 6}\\\\
+
+
+Because $u,v$ are 0-forms, $du,dv$ are 1-forms.\\
+We will use this in the product rule for exterior derivatives when considering Stokes' theorem on the manifold $M$.\\
+Assuming that $du,dv$ are zero at the boundary $\partial M$:
+
+$$
+    \re \int_{\partial M} v \star \overline{du} = 0
+$$
+
+\begin{align*}
+    0 &=\re \int_{\partial M} v \star \overline{du} \\
+        &= \re \int_M d(v \star \overline{du}) \\
+        &= \re \int_M dv \wedge \star \overline{du} + \re \int_M (-1)^0 v \wedge d \star \overline{du} \\
+        &= -\re \int_M \star \overline{du} \wedge dv + \re \int_M v \wedge d \star \overline{du} \\
+    \implies \re \int_M \star \overline{du} \wedge dv &= \re \int_M v \wedge d \star \overline{du}
+\end{align*}
+where we used Stokes' theorem to convert $\int_{\partial M} \cdots \rightarrow \int_M d(\cdots)$\\
+
+From our previous result for the inner product of complex 1-forms, we have:
+\begin{align*}
+    \langle \langle du, dv \rangle \rangle &= \re \int_M \star \overline{du} \wedge dv  \\
+        &= \re \int_M v \wedge d \star \overline{du} \\
+        &= -\re \int_M d \star \overline{du} \wedge v \\
+        &= \re \int_M (\star \star) d \star \overline{du} \wedge v \tag*{$\star^2 = $ -id when $n=2, k=1$} \\
+        &= \re \int_M \star (\star d \star d) \bar{u} \wedge v \tag*{$\overline{du} = d\bar{u}$} \\
+        &= \re \int_M \star \lap\bar{u} \wedge v \tag*{$\lap = \star d \star d$} \\
+        &= \langle \langle \lap u, v \rangle \rangle
+\end{align*}
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 7}\\\\
+
+
+Area on a Riemann surface (topological disk $M$) can be expressed in terms of exterior calculus as $X \times \cJ X$.\\
+A conformal parameterization $z : M \rightarrow \C$ must satisfy the Cauchy-Riemann equation: 
+$$ dz(\cJ X) = idz(X) \implies \star dz = idz $$
+Total signed area of the region $z(M)$:
+\begin{align*}
+    \cA(z) &= \int_M dz \times d\bar{z} \\
+        &= \hal \int_M \star (dz \wedge d\bar{z}) \tag*{Signed vector area formula} \\
+        &= \frac{i}{2} \int_M dz \wedge d\bar{z} \tag*{using Cauchy-Riemann} \\
+        &= -\frac{i}{2} \int_M d\bar{z} \wedge dz
+\end{align*}
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 8}\\\\
+
+
+Using \href{https://projecteuclid.org/ebooks/proceedings-of-the-centre-for-mathematics-and-its-applications/Theoretical%20and%20Numerical%20Aspects%20of%20Geometric%20Variational%20Problems/chapter/Computing%20conformal%20maps%20and%20minimal%20surfaces/pcma/1416323558}{this paper}
+by John E. Hutchinson as reference, whos argument works for the smooth case.\\
+
+The conformal energy $E_C(z)$ is defined as the failure of the map $z$ to be conformal, and as such, satisfying the discrete
+Cauchy-Riemann equations.\\
+
+We prove that $E_C(z)$ is the difference of Dirichlet energy $E_D(z) = \hal \ll \lap z, z \rr$ and total signed area $\cA$:
+\begin{align*}
+    E_C(z) &= \frac14 || \star dz - idz ||^2 \\
+        &=  \frac14 \ll \star dz - idz, \star dz - idz \rr \tag*{Inner product is distributive} \\
+        &=  \frac14 \Big( \ll \star dz, \star dz \rr - \ll \star dz, idz \rr - \ll idz, \star dz \rr + \ll idz, idz \rr \Big) \\
+        &=  \frac14 \Big( 2 \ll \star dz, \star dz \rr - 2i\ll \star dz, dz \rr \Big) \tag*{Inner product is homogeneous} \\
+        &=  \hal \ll \star dz, \star dz \rr - \frac{i}{2} \ll \star dz, dz \rr \\
+        &=  \hal \ll \lap z, z \rr - \frac{i}{2} \int_M (\star \star d\bar{z}) \wedge dz \\
+        &=  \hal \ll \lap z, z \rr + \frac{i}{2} \int_M d\bar{z} \wedge dz \\
+        &=  E_D(z) - \cA(z)
+\end{align*}
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 9}\\\\
+
+
+Using \href{https://www.cs.cmu.edu/~kmcrane/Projects/Other/ConformalGeometryOfSimplicialSurfaces.pdf}{this paper}
+by Keenan Crane as reference, which reminded me of our previous result for the complex inner product which we use below.\\
+
+We had proved in a past assignment that signed area of a polygon is the sum of cross products of neighbouring oriented 
+boundary edges, which sums up $n$ terms for an $n$-gon.\\
+
+Using this result for $n$-gons to find the area of piecewise linear region $z(M)$:
+
+\begin{align*}
+    \cA(z) &= \hal \sum_{ij \in \partial E_\partial} z_i \times z_j \\
+        &= \hal \sum_{ij \in \partial E_\partial} \im (\bar{z_i} z_j) \tag*{$z_i \times z_j := \im (\bar{z_i} z_j)$} \\
+        &= \hal \sum_{ij \in \partial E_\partial} \frac{\bar{z_i}z_j - \bar{z_j}z_i}{2i} \\
+        &= \hal \sum_{ij \in \partial E_\partial} \frac{\bar{z_i}z_j - \bar{z_j}z_i}{2i} \\
+        &= -\frac{i}{4} \sum_{ij \in \partial E_\partial} \bar{z_i}z_j - \bar{z_j}z_i
+\end{align*}
+
+
+\pagebreak
+\boxed{\text{Exercise} \quad 10}\\\\
+
+
+From the \href{https://geometrycollective.github.io/boundary-first-flattening/}{Boundary First Flattening paper} by Sawhney et. al.\\
+
+Conformal maps can also be expressed as pairs of conjugate harmonic functions.
+A real function $a : M \rightarrow \R$ is harmonic if it sits in the kernel of the Laplace-Beltrami operator $\lap$,
+i.e., it solves the Laplace equation $\lap a = 0$.\\
+
+Suppose we express a holomorphic map as $z = a + ib$ for a pair of coordinate functions $a, b : M \rightarrow \R$.
+Then (by Cauchy-Riemann)
+$$\cJ \grad a = \grad b$$
+i.e., the gradients $\grad$ of the two coordinates are orthogonal and have equal magnitude.\\
+
+Since a quarter-rotation of a gradient field is divergence-free, we have
+$$\lap a = \grad \cdot \grad a = -\grad \cdot (\cJ \grad b) = 0$$
+and similarly, $\lap b = 0$. In other words, the two real components of a holomorphic function
+are both harmonic — we say that $a$ and $b$ form a \emph{conjugate harmonic} pair.
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 11}\\\\
+
+
+If a harmonic function $\varphi : M \rightarrow \C$ is real valued then we do not satisfy Cauchy-Riemann conditions any more,
+so $\varphi$ will not be holomorphic/conformal.\\
+Geometrically we can interpret $\varphi$ as mapping vectors in $M$ to the real line in $\C$, so the angles in $M$ 
+aren't being preserved. \\
+
+A more mathematical treatment comes from \href{https://doi.org/10.1016/0040-9383(76)90042-2}{Eells \& Wood}, which says that:
+\begin{mdframed}
+    If $f : M_1 \rightarrow M_2$ is a harmonic map and 
+    $$\chi(M_1) + |\deg(f)\chi(M_2)| > 0,$$
+    then $f$ is either holomorphic or anti-holomorphic (where $\chi(M)$ is the Euler characteristic of $M$, and $\deg(f)$
+    is the topological degree of $f$).
+\end{mdframed}
+We know that $\chi(M) = 1$ because $M$ is a topological disk but both topological degree of $\varphi$ and Euler characteristic 
+of the image of $\varphi$ are undefined, so $\varphi$ cannot be holomorphic or anti-holomorphic.
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 12}\\\\
+
+
+This proof is adapted from \href{https://linear.axler.net/}{Linear Algebra Done Right} by Sheldon Axler:\\
+
+Suppose $A = A^*$ is a self-adjoint operator on a complex inner-product space $V$, with Hermitian inner product $\ll.\,,.\rr$.
+Let $\lambda$ be an eigenvalue of $A$, and let $v$ be a nonzero vector in $V$ such that $Av=\lambda v$. Then
+$$
+    \lambda||v||^2 = \ll\lambda v, v \rr = \ll A v, v \rr = \ll v, A^* v \rr = \ll v, Av \rr = \ll v, \lambda v \rr = \bar{\lambda}||v||^2
+$$
+So $\lambda = \bar{\lambda}$, which means all the eigenvalues of a self-adjoint operator are real.
+
+
+\pagebreak
+\boxed{\text{Exercise} \quad 13}\\\\
+
+
+From Axler:\\
+
+An operator on an inner product space is called normal if it commutes with its adjoint, i.e., $AA^* = A^*A$.\\
+If $A$ is normal so is $A - \lambda I$ which gives us:
+$$
+    0 = ||(A - \lambda I)v|| = ||(A - \lambda I)^* v|| = ||(A^* - \bar{\lambda} I)v||
+$$
+
+Suppose $\lambda_i, \lambda_j$ are distinct eigenvalues of $A$ with corresponding eigenfunctions $e_i, e_j$.
+We have $Ae_i = \lambda_i e_i$ and $Ae_j = \lambda_j e_j$. Furthermore, $A^*e_j = \bar{\lambda_j}e_j$. Thus:
+\begin{align*}
+    (\lambda_i -  \lambda_j) \ll e_i, e_j \rr &= \ll \lambda_i e_i, e_j \rr  - \ll e_i, \bar{\lambda_j}e_j \rr \\
+        &= \ll A e_i, e_j \rr - \ll e_i, A^* e_j \rr \\
+        &= 0
+\end{align*}
+Because $\lambda_i \neq \lambda_j$ this implies $\ll A e_i, e_j \rr = 0$, i.e., $e_i$ and $e_j$ are orthogonal.\\
+Every self-adjoint operator should be normal. If $A$ is self-adjoint: $A^* = A$ and $\bar{\lambda} = \lambda$. \\
+This proves that eigenvectors of a self-adjoint operator with unique eigenvalues must be orthogonal.
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 14}\\\\
+
+
+Below is a restatement of Example 1.27 from \href{https://people.csail.mit.edu/jsolomon/}{Numerical Algorithms by Justin Solomon}:\\
+
+Our goal is to minimize $x^TAx$ for a PSD symmetric matrix $A$ subject to our contraint $||x||^2 = 1$,
+which is equivalent to $\ll x,\,x \rr = ||x||^2 = 1$.\\
+
+Without the constraint the function is minimized at $x = 0$. We define the Lagrange multiplier function:
+$$
+    \Lambda(x, \lambda) = x^TAx - \lambda(||x||^2 - 1) = x^TAx - \lambda(x^Tx - 1)
+$$
+Differentiating w.r.t $x$, we find $0 = \grad_x \Lambda = 2Ax - 2\lambda x$. In other words, critical points of $x$ are exactly
+the eigenvectors of the matrix $A$:
+$$
+    Ax = \lambda x, \quad \text{with} \quad ||x||^2 = 1
+$$
+At these critical points, we can evaluate the objective function as $x^TAx = x^T\lambda x = \lambda||x||^2 = \lambda$.\\
+Hence, the minimizer of $x^TAx$ subject to $||x||^2 = 1$ is the eigenvector $x$ with minimum eigenvalue $\lambda$.
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 15}\\\\
+
+Section 6.3.1 from Solomon:\\
+
+Assume that $A \in \R^{n \times n}$ is non-defective and nonzero with all real eigenvalues,
+e.g., $A$ is symmetric. By definition, $A$ has a full set of eigenvectors $x_1,\dots,x_n \in \R^n$; 
+we sort them such that their corresponding eigenvalues satisfy $|\lambda_1| \ge |\lambda_2| \ge \dots \ge |\lambda_n|$.\\
+
+Take an arbitrary vector $v \in \R^n$. Since the eigenvectors of $A$ span $\R^n$, we can write
+$v$ in the $x_i$ basis as $v = c_1x_1 + \dots + c_nx_n$. Applying $A$ to both sides:
+
+\begin{align*}
+    Av &= c_1Ax_1 + \dots + c_nAx_n \\
+        &= c_1\lambda_1x_1 + \dots + c_n\lambda_nx_n \tag*{since $Ax_i = \lambda x_i$} \\
+        &= \lambda_1 \Big( c_1x_1 + c_2\frac{\lambda_2}{\lambda_1}x_2 + \dots + c_n\frac{\lambda_n}{\lambda_1}x_n \Big) \\
+    A^2v &= \lambda_1^2 \Big(c_1x_1 + c_2\Big(\frac{\lambda_2}{\lambda_1}\Big)^2x_2 + \dots + c_n\Big(\frac{\lambda_n}{\lambda_1}\Big)^2x_n \Big) \\
+    \vdots \\
+    A^kv &= \lambda_1^k \Big(c_1x_1 + c_2\Big(\frac{\lambda_2}{\lambda_1}\Big)^kx_2 + \dots + c_n\Big(\frac{\lambda_n}{\lambda_1}\Big)^kx_n \Big)
+\end{align*}
+
+As $k \rightarrow \infty$, the ratio $\Big(\ifrac{\lambda_i}{\lambda_1}\Big)^k \rightarrow 0$ unless $\lambda_i = \pm \lambda_1$,
+since $\lambda_1$ has the largest magnitude of any eigenvalue by construction. If $x$ is the projection of $v$ onto the space
+of eigenvectors with eigenvalues $\lambda_1$, then -- at least when the absolute values $|\lambda_i|$ are unique --
+as $k \rightarrow \infty$ the following approximation begins to dominate: $A^kv \approx \lambda_1x$.\\
+
+By composing this algorithm, called \emph{power iteration}, we produce vectors $v_k$ more and more parallel
+to the desired $x_1$ as $k \rightarrow \infty$.
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 16}\\\\
+
+
+Because $A$ has an inverse:
+$$
+    Ax = \lambda x \implies x = \lambda A^{-1}x \implies A^{-1}x = \ifrac{1}{\lambda}x
+$$
+So we retain the same eigenvectors, but now $\frac{1}{\lambda}$ is an eigenvalue of $A^{-1}$.
+We can visualize this as the opposite of stretching/squishing
+that happened to the eigenvectors of $A$, because we now scale them by $\frac{1}{\lambda}$ instead.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
