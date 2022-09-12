@@ -420,7 +420,10 @@ of eigenvectors with eigenvalues $\lambda_1$, then -- at least when the absolute
 as $k \rightarrow \infty$ the following approximation begins to dominate: $A^kv \approx \lambda_1x$.\\
 
 By composing this algorithm, called \emph{power iteration}, we produce vectors $v_k$ more and more parallel
-to the desired $x_1$ as $k \rightarrow \infty$.
+to the desired $x_1$ as $k \rightarrow \infty$. Power iteration tends to be much more reliable than standard iterative
+methods like \href{https://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf}{conjugate gradient}.
+Iterative solvers which may be very slow to converge for, e.g., poor triangulations,
+are much better suited for very large meshes, where matrix factors may not be able to fit into memory. 
 
 
 \vspace{1.8cm}
