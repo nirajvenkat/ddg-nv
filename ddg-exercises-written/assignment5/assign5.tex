@@ -1,0 +1,293 @@
+\documentclass{article}
+
+\usepackage{blindtext}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage[skip=1ex]{caption}
+\usepackage{subcaption}
+\usepackage{mdframed}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{cancel}
+\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage{helvet}
+\usepackage{microtype}
+\usepackage[pdftex]{hyperref}
+\usepackage{float}
+\usepackage{nicematrix}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=1cm,
+    bottom=1cm
+}
+
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+% Macros
+
+% Make inline frac bigger
+\newcommand\ifrac[2]{{\displaystyle\frac{#1}{#2}}}
+
+% Aliases
+\def\wstar{\overset{*}{\rightharpoonup}}
+\def\grad{\nabla}
+\def\lap{\Delta}
+\def\nt{\notag}
+\def\dt{\partial_t}
+\def\hal{\ifrac{1}{2}}
+\def\ep{\varepsilon}
+\def\cK{\mathcal{K}}
+\def\cA{\mathcal{A}}
+\def\cS{\mathcal{S}}
+\def\cV{\mathcal{V}}
+\def\cJ{\mathcal{J}}
+\def\Q{\mathbb{Q}}
+\def\R{\mathbb{R}}
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+\def\la{\langle}
+\def\ra{\rangle}
+\def\ll{\langle\langle}
+\def\rr{\rangle\rangle}
+
+% Custom operators
+\DeclareMathOperator{\Err}{Err}
+\DeclareMathOperator{\re}{Re}
+\DeclareMathOperator{\im}{Im}
+\DeclareMathOperator{\id}{id}
+
+
+
+
+
+\begin{document}
+
+
+
+\title{Written Assignment 5}
+
+\author{Niraj Venkat}
+
+\date{}
+
+\maketitle
+
+\vspace{.8cm}
+\boxed{\text{Exercise} \quad 1}\\\\
+
+
+Details in papers \href{http://www.cs.cmu.edu/~kmcrane/Projects/GeodesicsInHeat/paper.pdf}{[1]} 
+\href{https://www.cs.cmu.edu/~kmcrane/Projects/HeatMethod/paperTOG.pdf}{[2]}
+\href{https://arxiv.org/abs/2007.10430}{[3]}  by Crane et al.\\
+
+In contrast to algorithms that compute shortest paths along a graph (like Dijkstra, $A^*$), the \emph{heat method}
+computes the distance to points on a continuous, curved domain. Typically distance computation for some distance function
+$\phi$ is formulated using the \emph{Eikonal equation}:
+$$
+    |\grad \phi| = 1 \quad\quad \text{(distance changes by 1 meter per meter)}
+$$
+However, this results in a system of non-linear hyperbolic equations which is expensive to solve.\\
+
+The heat method takes inspiration from a \href{http://sci-hub.se/https://doi.org/10.1002/cpa.3160200210}{result}
+by S. R. Srinivasa Varadhan which says that distance between a source point $x$ and destination $y$ on a curved domain
+can be recovered via a simple pointwise transformation of the heat kernel $k_{t, x}$:
+$$
+    \phi(x, y) = \lim_{t \rightarrow 0} \sqrt{-4t \log k_{t, x}(y)}
+$$
+However, reconstructing the heat kernel is prohibitive in practice, and this formula lacks robustness to numerical error.
+The geodesic distance varies a lot with tiny errors in reconstruction.\\
+
+The heat method works on arbitrary domains: smooth manifolds, triangle meshes, polygon meshes, point clouds, etc. All we need
+to define is the gradient, divergence and Laplacian. The algorithm works as follows:
+\begin{itemize}
+    \item Integrate the heat flow $\ dot{u} = \grad u$ for some fixed time $t$.
+    \item Evaluate the vector field $X = -\ifrac{\grad u_t}{|\grad u_t|}$.
+    \item Solve the Poisson equation $\lap \phi = \grad \cdot X$.
+\end{itemize}
+
+By approximating Step 1 using backward Euler integration $(\id \,-\, t\Delta)u_t = \delta_x$ we effectively convert the problem into a
+linear elliptic equation. For triangle meshes, the authors provide performance and convergence guarantees given some requirements are met --
+related to mesh resolution and triangulation quality.
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 2}\\\\
+
+
+We make use of the composition theorem from \href{https://web.stanford.edu/~boyd/cvxbook/}{Convex Optimization - Boyd and Vandenberghe}.\\
+
+\begin{mdframed}
+    A nondecreasing convex function of a convex function is convex.
+\end{mdframed}
+
+Suppose we have $f(x) = ||x||$ and $g(x) = x^2$. Because $f$ and $g$ are convex, we now have
+$g \circ f(x) = ||x||^2$ is convex. We can plug differential functions $\phi_1, \phi_2$ into a convex combination:
+
+\begin{align*}
+    \eta || \grad \phi_1 - X ||^2 + (1 - \eta) || \grad \phi_2 - X ||^2 &\ge || \eta (\grad \phi_1 - X) + (1 - \eta) (\grad \phi_2 - X) ||^2 \\
+        &= || \eta \grad \phi_1 + (1 - \eta) \grad \phi_2 - X ||^2 
+\end{align*}
+
+We can make the above claim By integrating on the manifold $M$:
+
+\begin{align*}
+    \eta \int_M || \grad \phi_1 - X ||^2 dA + (1 - \eta) \int_M || \grad \phi_2 - X ||^2 dA &\ge \int_M || \eta \grad \phi_1 + (1 - \eta) \grad \phi_2 - X ||^2 dA \\
+    \eta E(\phi_1) + (1 - \eta)E(\phi_2) &\ge E(\eta\phi_1 + (1 - \eta)\phi_2)
+\end{align*}
+
+$\therefore E$ is convex.
+
+
+\pagebreak
+\boxed{\text{Exercise} \quad 3}\\\\
+
+
+Restating Green's first identity, with the assumption that $\grad f \cdot n = 0$:
+
+\begin{align}
+    \langle \lap f, g \rangle &= -\langle \grad f, \grad g \rangle + \cancelto{0}{\langle \grad f \cdot n, g \rangle_\partial} \nt\\
+    \implies \langle \grad f, \grad g \rangle &= - \langle \lap f, g \rangle
+\end{align}
+
+The energy functional $E$ can be expressed as:
+
+\begin{align*}
+    E(\phi) &:= \int_M || \grad \phi - X ||^2 dA \\
+        &= \int_M \ll \grad \phi - X, \grad \phi - X \rr dA \\
+        &= \int_M \underbrace{(\ll \grad \phi, \grad \phi \rr - 2 \ll \grad \phi, X \rr dA + \ll X, X \rr)}_u \, d\underbrace{A}_v \\
+\end{align*}
+
+A corollary of the divergence theorem:
+\begin{align}
+    \ll \grad \phi, X \rr = \ll \phi, -\grad \cdot X \rr
+\end{align}
+
+Using integration by parts $\int udv = uv - \int vdu$ along with $du = 0$:
+\begin{align*}
+    \frac{E(\phi)}{A} &= -\ll \lap f, g \rr - 2 \ll \grad \phi, X \rr + ||X||^2 \tag*{from (1)} \\
+        &= -\ll \lap f, g \rr + 2 \ll \phi, \grad \cdot X \rr + ||X||^2 \tag*{from (2)}
+\end{align*}
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 4}\\\\
+
+
+\begin{align*}
+    E(\phi + \epsilon \psi) &= - \ll \lap (\phi + \epsilon \psi), \phi + \epsilon \psi \rr + 2 \ll \phi + \epsilon \psi, \grad \cdot X \rr + || X ||^2 \\
+        &= - \ll \lap \phi + \epsilon \lap \psi, \phi + \epsilon \psi \rr + 2 \ll \phi + \epsilon \psi, \grad \cdot X \rr + || X ||^2 \\
+        &= - \ll \lap \phi, \phi \rr - \epsilon \ll \lap \phi, \psi \rr - \epsilon \ll \lap \psi, \phi \rr - \epsilon^2 \ll \lap \psi, \psi \rr + 2 \ll \phi, \grad \cdot X \rr + 2 \epsilon \ll \psi, \grad \cdot X \rr + || X ||^2 \\
+        &= E(\phi) - \epsilon \ll \lap \phi, \psi \rr - \epsilon \ll \lap \psi, \phi \rr - \epsilon^2 \ll \lap \psi, \psi \rr + 2 \epsilon \ll \psi, \grad \cdot X \rr
+\end{align*}
+
+Taking the limit $\epsilon \to 0$ and dropping the term quadratic in $\epsilon$:
+\begin{align*}
+    D_\psi E(\phi) &= \lim_{\epsilon \to 0} \frac{E(\phi + \epsilon \psi) - E(\phi)}{\epsilon} \\
+        &= - \ll \lap \phi, \psi \rr - \ll \lap \psi, \phi \rr + 2 \ll \psi, \grad \cdot X \rr \\
+        &= - 2 \ll \lap \phi, \psi \rr + 2 \ll \psi, \grad \cdot X \rr \\
+        &= 2 \ll \psi, \grad \cdot X - \lap \phi \rr
+\end{align*}
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 5}\\\\
+
+
+From our previous result, we have:
+
+\begin{align*}
+    D_\psi E(\phi) &= 2 \ll \grad \cdot X - \lap \phi, \psi \rr = \grad E(\phi), \psi \rr \\
+    \implies \grad \cdot X - \lap \phi &= \grad E(\phi)
+\end{align*}
+
+$\therefore \grad E(\phi) = 0$ if and only if $\lap \phi = \grad \cdot X$.
+
+
+\pagebreak
+\boxed{\text{Exercise} \quad 6}\\\\
+
+
+Stokes'/divergence theorem allows us to convert the integral of integrated divergence of $X$ over the domain $M$
+into a boundary integral over $\partial M$.
+
+\begin{align*}
+    \int_M \nabla \cdot X \ dA &= \int_{\partial M} n \cdot X \ dl \\
+        &= \sum_{j} \Big(\frac{e_1}{| e_1 |} \cdot X_j \Big) l_1 +\Big(\frac{e_2}{| e_2 |} \cdot X_j \Big) l_2 \\
+        &= \sum_{j} \frac{l_1}{| e_1 |} e_1 \cdot X_j + \frac{l_2}{| e_2 |} e_2 \cdot X_j \\
+        &= \sum_{j} \hal \cot{\theta_1} (e_1 \cdot X_j) + \hal \cot{\theta_2} (e_2 \cdot X_j) \\
+        &= \hal \sum_{j} \cot{\theta_1} (e_1 \cdot X_j) + \cot{\theta_2} (e_2 \cdot X_j)
+\end{align*}
+
+
+\vspace{1.8cm}
+\boxed{\text{Exercise} \quad 7,8,9}\\\\
+TODO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
