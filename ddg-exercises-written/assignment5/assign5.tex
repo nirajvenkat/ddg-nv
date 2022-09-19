@@ -110,7 +110,7 @@ The geodesic distance varies a lot with tiny errors in reconstruction.\\
 The heat method works on arbitrary domains: smooth manifolds, triangle meshes, polygon meshes, point clouds, etc. All we need
 to define is the gradient, divergence and Laplacian. The algorithm works as follows:
 \begin{itemize}
-    \item Integrate the heat flow $\ dot{u} = \grad u$ for some fixed time $t$.
+    \item Integrate the heat flow $\dot{u} = \grad u$ for some fixed time $t$.
     \item Evaluate the vector field $X = -\ifrac{\grad u_t}{|\grad u_t|}$.
     \item Solve the Poisson equation $\lap \phi = \grad \cdot X$.
 \end{itemize}
@@ -217,7 +217,7 @@ $\therefore \grad E(\phi) = 0$ if and only if $\lap \phi = \grad \cdot X$.
 \boxed{\text{Exercise} \quad 6}\\\\
 
 
-Stokes'/divergence theorem allows us to convert the integral of integrated divergence of $X$ over the domain $M$
+Stokes'/divergence theorem allows us to convert the integral of divergence of $X$ over the domain $M$
 into a boundary integral over $\partial M$.
 
 \begin{align*}
