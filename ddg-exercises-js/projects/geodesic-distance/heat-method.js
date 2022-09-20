@@ -15,9 +15,13 @@ class HeatMethod {
 		this.geometry = geometry;
 		this.vertexIndex = indexElements(geometry.mesh.vertices);
 
-		// TODO: build laplace and flow matrices
-		this.A = SparseMatrix.identity(1, 1); // placeholder
-		this.F = SparseMatrix.identity(1, 1); // placeholder
+		// We use the time step t = h^2
+		let h = this.geometry.meanEdgeLength();
+		let M = this.geometry.massMatrix(this.vertexIndex);
+
+		// Build Laplace and flow matrices
+		this.A = this.geometry.laplaceMatrix(this.vertexIndex);
+		this.F = M.plus(this.A.timesReal(h * h));
 	}
 
 	/**
@@ -29,9 +33,33 @@ class HeatMethod {
 	 * @returns {Object} A dictionary mapping each face of the input mesh to a {@link module:LinearAlgebra.Vector Vector}.
 	 */
 	computeVectorField(u) {
-		// TODO
+		// Using the method for simplicial meshes in Section 3.2.1
+		let X = {};
 
-		return {}; // placeholder
+		for (let f of this.geometry.mesh.faces) {
+			const area = this.geometry.area(f);
+			const N = this.geometry.faceNormal(f);
+			let gradU = new Vector();
+
+			for (let h of f.adjacentHalfedges()) {
+				// Vertex opposite this halfedge
+				const vIdx = this.vertexIndex[h.corner.vertex];
+				// Heat at the opposite vertex
+				const u_i = u.get(vIdx, 0);
+				let e_i = this.geometry.vector(h);
+				let cross = N.cross(e_i);
+				cross.scaleBy(u_i);
+
+				gradU.incrementBy(cross);
+			}
+
+			// Gradient of this triangle
+			gradU.divideBy(2.0 * area);
+			gradU.normalize();
+			X[f] = gradU.negated();
+		}
+
+		return X;
 	}
 
 	/**
@@ -43,9 +71,29 @@ class HeatMethod {
 	 * @returns {module:LinearAlgebra.DenseMatrix}
 	 */
 	computeDivergence(X) {
-		// TODO
+		let V = this.geometry.mesh.vertices.length;
+		let divX = DenseMatrix.zeros(V, 1);
 
-		return DenseMatrix.zeros(1, 1); // placeholder
+		for (let v of this.geometry.mesh.vertices) {
+			let vIdx = this.vertexIndex[v];
+			let sum = 0.0;
+
+			for (let h of v.adjacentHalfedges()) {
+				let e_1 = this.geometry.vector(h);
+				let e_2 = this.geometry.vector(h.prev).negated();
+				let cot_1 = this.geometry.cotan(h);
+				let cot_2 = this.geometry.cotan(h.prev);
+				// Vector field at this face
+				const X_j = X[h.face];
+
+				sum += cot_1 * e_1.dot(X_j) + cot_2 * e_2.dot(X_j);
+			}
+
+			// Divergence at this vertex
+			divX.set(0.5 * sum, vIdx, 0);
+		}
+
+		return divX;
 	}
 
 	/**
@@ -73,10 +121,19 @@ class HeatMethod {
 	 * @returns {module:LinearAlgebra.DenseMatrix}
 	 */
 	compute(delta) {
-		// TODO
-		let phi = DenseMatrix.zeros(delta.nRows(), 1); // placeholder
+		// Integrate heat flow
+		let llt = this.F.chol();
+		let u = llt.solvePositiveDefinite(delta);
 
-		// since φ is unique up to an additive constant, it should
+		// Compute unit vector field X and divergence ∇.X
+		let X = this.computeVectorField(u);
+		let div = this.computeDivergence(X);
+
+		// Solve poisson equation Δφ = ∇.X
+		llt = this.A.chol();
+		let phi = llt.solvePositiveDefinite(div.negated());
+
+		// Since φ is unique up to an additive constant, it should
 		// be shifted such that the smallest distance is zero
 		this.subtractMinimumDistance(phi);
 
