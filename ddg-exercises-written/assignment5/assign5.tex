@@ -117,7 +117,7 @@ to define is the gradient, divergence and Laplacian. The algorithm works as foll
 
 By approximating Step 1 using backward Euler integration $(\id \,-\, t\Delta)u_t = \delta_x$ we effectively convert the problem into a
 linear elliptic equation. For triangle meshes, the authors provide performance and convergence guarantees given some requirements are met --
-related to mesh resolution and triangulation quality.
+related to mesh resolution (time step equals mean edge length squared) and triangulation quality (Delaunay).
 
 
 \vspace{1.8cm}
