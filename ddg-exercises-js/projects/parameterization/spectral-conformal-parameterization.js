@@ -21,7 +21,7 @@ class SpectralConformalParameterization {
 	 * @returns {module:LinearAlgebra.ComplexSparseMatrix}
 	 */
 	buildConformalEnergy() {
-		// Build the dirichlet energy matrix
+		// Build the Dirichlet energy matrix
 		let ED = this.geometry.complexLaplaceMatrix(this.vertexIndex);
 		ED.scaleBy(new Complex(0.5));
 

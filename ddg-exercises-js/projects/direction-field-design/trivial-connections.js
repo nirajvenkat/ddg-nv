@@ -19,16 +19,22 @@ class TrivialConnections {
 		this.vertexIndex = indexElements(geometry.mesh.vertices);
 		this.edgeIndex = indexElements(geometry.mesh.edges);
 
-		// TODO: build harmonic bases
-		this.bases = []; // placeholder
+		// Initialize Hodge decomposition
+		let hodgeDecomposition = new HodgeDecomposition(geometry);
 
-		// build period matrix
+		// Build generators
+		let treeCotree = new TreeCotree(geometry.mesh);
+		treeCotree.buildGenerators();
+
+		// Build harmonic bases
+		let harmonicBases = new HarmonicBases(geometry);
+		this.bases = harmonicBases.compute(hodgeDecomposition);
+
+		// Build period matrix and store relevant DEC operators
 		this.P = this.buildPeriodMatrix();
-
-		// TODO: store relevant DEC operators
-		this.A = SparseMatrix.identity(1, 1); // placeholder
-		this.hodge1 = SparseMatrix.identity(1, 1); // placeholder
-		this.d0 = SparseMatrix.identity(1, 1); // placeholder
+		this.A = hodgeDecomposition.A;
+		this.hodge1 = hodgeDecomposition.hodge1;
+		this.d0 = hodgeDecomposition.d0;
 	}
 
 	/**
@@ -39,9 +45,28 @@ class TrivialConnections {
 	 * @returns {module:LinearAlgebra.SparseMatrix}
 	 */
 	buildPeriodMatrix() {
-		// TODO
+		let N = this.bases.length;
+		let T = new Triplet(N, N);
 
-		return SparseMatrix.identity(1, 1); // placeholder
+		for (let i = 0; i < N; i++) {
+			let generator = this.geometry.mesh.generators[i];
+
+			for (let j = 0; j < N; j++) {
+				let basis = this.bases[j];
+				let sum = 0;
+
+				for (let h of generator) {
+					let k = this.edgeIndex[h.edge];
+					let sign = h.edge.halfedge === h ? 1 : -1;
+
+					sum += sign * basis.get(k, 0);
+				}
+
+				T.addEntry(sum, i, j);
+			}
+		}
+
+		return SparseMatrix.fromTriplet(T);
 	}
 
 	/**
@@ -73,9 +98,23 @@ class TrivialConnections {
 	 * @returns {module:LinearAlgebra.DenseMatrix} The coexact component 𝛿β.
 	 */
 	computeCoExactComponent(singularity) {
-		// TODO
+		let vertices = this.geometry.mesh.vertices;
+		let V = vertices.length;
 
-		return DenseMatrix.zeros(1, 1); // placeholder
+		// Construct right hand side
+		let rhs = DenseMatrix.zeros(V, 1);
+		for (let v of vertices) {
+			let i = this.vertexIndex[v];
+			let u = -this.geometry.angleDefect(v) + 2 * Math.PI * singularity[v];
+
+			rhs.set(u, i, 0);
+		}
+
+		// Solve linear system
+		let llt = this.A.chol();
+		let betaTilde = llt.solvePositiveDefinite(rhs);
+
+		return this.hodge1.timesDense(this.d0.timesDense(betaTilde));
 	}
 
 	/**
@@ -114,9 +153,46 @@ class TrivialConnections {
 	 * @returns {module:LinearAlgebra.DenseMatrix}
 	 */
 	computeHarmonicComponent(deltaBeta) {
-		// TODO
+		let N = this.bases.length;
+		let E = this.geometry.mesh.edges.length;
+		let gamma = DenseMatrix.zeros(E, 1);
 
-		return DenseMatrix.zeros(1, 1); // placeholder
+		if (N > 0) {
+			// Construct right hand side
+			let rhs = DenseMatrix.zeros(N, 1);
+			for (let i = 0; i < N; i++) {
+				let generator = this.geometry.mesh.generators[i];
+				let sum = 0;
+
+				for (let h of generator) {
+					let k = this.edgeIndex[h.edge];
+					let sign = h.edge.halfedge === h ? 1 : -1;
+
+					sum += this.transportNoRotation(h);
+					sum -= sign * deltaBeta.get(k, 0);
+				}
+
+				// normalize sum between -π and π
+				while (sum < -Math.PI) sum += 2 * Math.PI;
+				while (sum >= Math.PI) sum -= 2 * Math.PI;
+
+				rhs.set(sum, i, 0);
+			}
+
+			// Solve linear system
+			let lu = this.P.lu();
+			let z = lu.solveSquare(rhs);
+
+			// Compute γ
+			for (let i = 0; i < N; i++) {
+				let basis = this.bases[i];
+				let zi = z.get(i, 0);
+
+				gamma.incrementBy(basis.timesReal(zi));
+			}
+		}
+
+		return gamma;
 	}
 
 	/**
@@ -133,8 +209,12 @@ class TrivialConnections {
 			return undefined;
 		}
 
-		// TODO
+		// Coexact component 𝛿β
+		let deltaBeta = this.computeCoExactComponent(singularity);
 
-		return undefined; // placeholder
+		// Extract harmonic component
+		let gamma = this.computeHarmonicComponent(deltaBeta);
+
+		return deltaBeta.plus(gamma);
 	}
 }

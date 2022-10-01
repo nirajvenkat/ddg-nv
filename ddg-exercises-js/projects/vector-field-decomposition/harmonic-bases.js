@@ -22,9 +22,18 @@ class HarmonicBases {
 	 * @returns {module:LinearAlgebra.DenseMatrix}
 	 */
 	buildClosedPrimalOneForm(generator, edgeIndex) {
-		// TODO
+		let E = this.geometry.mesh.edges.length;
 
-		return DenseMatrix.zeros(1, 1); // placeholder
+		// ω as described in pg 148, 149 of the notes
+		let omega = DenseMatrix.zeros(E, 1);
+		for (let h of generator) {
+			let i = edgeIndex[h.edge];
+			let sign = h.edge.halfedge === h ? 1 : -1;
+
+			omega.set(sign, i, 0);
+		}
+
+		return omega;
 	}
 
 	/**
@@ -36,8 +45,26 @@ class HarmonicBases {
 	 * @returns {module:LinearAlgebra.DenseMatrix[]}
 	 */
 	compute(hodgeDecomposition) {
-		// TODO
+		let gammas = [];
+		let generators = this.geometry.mesh.generators;
 
-		return []; // placeholder
+		if (generators.length > 0) {
+			// Index edges
+			let edgeIndex = indexElements(this.geometry.mesh.edges);
+
+			// Build bases with generators
+			for (let generator of generators) {
+				// Build closed primal one form
+				let omega = this.buildClosedPrimalOneForm(generator, edgeIndex);
+
+				// Compute exact component dα
+				let dAlpha = hodgeDecomposition.computeExactComponent(omega);
+
+				// Extract harmonic component
+				gammas.push(omega.minus(dAlpha));
+			}
+		}
+
+		return gammas;
 	}
 }
