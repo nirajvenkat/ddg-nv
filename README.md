@@ -11,7 +11,7 @@ I tried to take this course as a student would - albeit on a tighter schedule. T
 The assignments are split into two major components: 
 
 - Coding: [`/ddg-exercises-js/`](/ddg-exercises-js/)
-- Written [`/ddg-exercises-written/`](/ddg-exercises-js/)
+- Written [`/ddg-exercises-written/`](/ddg-exercises-written/)
 
 ## Coding
 
@@ -25,4 +25,4 @@ These are effectively my notes for the course, delving slightly deeper into cert
 
 I used many references, and these are informally cited by providing the relevant link.
 
-Many errors still remain. Please don't hesitate to reach out with a fix, pull request, etc.
+Many errors still remain. Please don't hesitate to [reach me](mailto:venkatn93@gmail.com) with a fix, pull request, etc.
