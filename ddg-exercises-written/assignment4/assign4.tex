@@ -407,7 +407,7 @@ $v$ in the $x_i$ basis as $v = c_1x_1 + \dots + c_nx_n$. Applying $A$ to both si
 
 \begin{align*}
     Av &= c_1Ax_1 + \dots + c_nAx_n \\
-        &= c_1\lambda_1x_1 + \dots + c_n\lambda_nx_n \tag*{since $Ax_i = \lambda x_i$} \\
+        &= c_1\lambda_1x_1 + \dots + c_n\lambda_nx_n \tag*{since $Ax_i = \lambda_i x_i$} \\
         &= \lambda_1 \Big( c_1x_1 + c_2\frac{\lambda_2}{\lambda_1}x_2 + \dots + c_n\frac{\lambda_n}{\lambda_1}x_n \Big) \\
     A^2v &= \lambda_1^2 \Big(c_1x_1 + c_2\Big(\frac{\lambda_2}{\lambda_1}\Big)^2x_2 + \dots + c_n\Big(\frac{\lambda_n}{\lambda_1}\Big)^2x_n \Big) \\
     \vdots \\
@@ -417,7 +417,7 @@ $v$ in the $x_i$ basis as $v = c_1x_1 + \dots + c_nx_n$. Applying $A$ to both si
 As $k \rightarrow \infty$, the ratio $\Big(\ifrac{\lambda_i}{\lambda_1}\Big)^k \rightarrow 0$ unless $\lambda_i = \pm \lambda_1$,
 since $\lambda_1$ has the largest magnitude of any eigenvalue by construction. If $x$ is the projection of $v$ onto the space
 of eigenvectors with eigenvalues $\lambda_1$, then -- at least when the absolute values $|\lambda_i|$ are unique --
-as $k \rightarrow \infty$ the following approximation begins to dominate: $A^kv \approx \lambda_1x$.\\
+as $k \rightarrow \infty$ the following approximation begins to dominate: $A^kv \approx \lambda_1^kx$.\\
 
 By composing this algorithm, called \emph{power iteration}, we produce vectors $v_k$ more and more parallel
 to the desired $x_1$ as $k \rightarrow \infty$. Power iteration tends to be much more reliable than standard iterative
